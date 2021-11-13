@@ -112,6 +112,24 @@ async function run() {
             res.json(result);
         })
 
+        // order update status
+      app.post('/updateStatus', async (req, res) => {
+        const id = req.body.id;
+        const status = req.body.status;
+
+        const filter = { _id: ObjectId(id) }
+        const options = { upsert: true };
+        const updateStatus =  {
+            $set: {
+              "status": status === 'pending' ? 'approved ' : 'pending'
+            },
+          };
+
+        const result = await ordersCollection.updateOne(filter, updateStatus, options);
+        console.log('database hited', result);
+        res.json(result);
+      })
+
         /* Get reviews api */
         app.get('/reviews', async (req, res) => {
             const cursor = reviewsCollection.find({});
