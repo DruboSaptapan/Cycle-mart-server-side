@@ -23,8 +23,8 @@ async function run() {
         const database = client.db("cycle_mart")
         const productsCollection = database.collection("products")
         const ordersCollection = database.collection("orders")
+        const reviewsCollection = database.collection("reviews")
         const usersCollection = database.collection('users');
-
 
         // Get Products API
         app.get('/products', async (req, res) => {
@@ -54,7 +54,6 @@ async function run() {
             const result = await ordersCollection.insertOne(order);
             res.json(result);
         })
-
 
         // Get Orders API
         app.get('/orders', async (req, res) => {
@@ -106,6 +105,19 @@ async function run() {
             res.json({ admin: isAdmin })
         })
 
+        /* Add orders api */
+        app.post('/reviews', async (req, res) => {
+            const reviews = req.body;
+            const result = await reviewsCollection.insertOne(reviews);
+            res.json(result);
+        })
+
+        /* Get reviews api */
+        app.get('/reviews', async (req, res) => {
+            const cursor = reviewsCollection.find({});
+            const reviews = await cursor.toArray();
+            res.send(reviews);
+        })
 
         // Delete Orders API
         app.delete('/orders/:id', async (req, res) => {
